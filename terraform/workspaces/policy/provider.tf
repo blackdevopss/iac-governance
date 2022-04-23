@@ -22,7 +22,7 @@ terraform {
     organization = "blackdevops"
 
     workspaces {
-      name = "governance"
+      name = "policy"
     }
   }
 }
