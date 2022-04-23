@@ -1,5 +1,5 @@
 location            = "centralus"
-resource_group_name = "rg-bdo-store"
+resource_group_name = "rg-bdoiaciac-demo"
 
 // PROVIDER SERVICE PRINCIPAL
 client_id       = "44ab41cb-daa4-45f7-9f17-2c340d2c63d1"
@@ -9,7 +9,7 @@ tenant_id       = "2a95a0cb-901a-49a7-83da-bc8e61c7f655"
 
 // SQL SERVER
 sqlServers = {
-  "sql-bdo-demo" = {
+  "sql-bdoiac-demo" = {
     administrator_login          = "devops"
     administrator_login_password = "exiWRZSlezoI3y4j"
     location                     = "centralus"
@@ -20,20 +20,20 @@ sqlServers = {
 
 // SQL DATABASE
 sqlDatabase = {
-  "sqldb-demoapp" = {
+  "sqldb-bdoiac-demo" = {
     collation      = "SQL_Latin1_General_CP1_CI_AS"
     license_type   = "LicenseIncluded"
     max_size_gb    = 4
     read_scale     = false
-    sku_name       = "Basic"
+    sku_name       = "S0"
     zone_redundant = false
-    server_name    = "sql-bdo-demo"
+    server_name    = "sql-bdoiac-demo"
   }
 }
 
 // KEY VAULT
 key_vault = {
-  "kv-shared" = {
+  "kv-bdoiac-demo" = {
     enable_rbac_authorization   = true
     enabled_for_deployment      = true
     enabled_for_disk_encryption = true

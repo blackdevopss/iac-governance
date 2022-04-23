@@ -7,6 +7,7 @@ resource "azurerm_mssql_server" "mssql" {
   administrator_login          = each.value.administrator_login
   administrator_login_password = each.value.administrator_login_password
   minimum_tls_version          = each.value.minimum_tls_version
+
 }
 
 resource "azurerm_mssql_database" "mssqldb" {

@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "st" {
-  name                     = "stbdodiaglogging"
+  name                     = "stbdoiacdiaglogging"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = var.location
   account_tier             = "Standard"
@@ -9,7 +9,7 @@ resource "azurerm_storage_account" "st" {
 }
 
 resource "azurerm_log_analytics_workspace" "loga" {
-  name                = "loga-bdo-store"
+  name                = "loga-bdoiac-store"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   sku                 = "PerGB2018"
