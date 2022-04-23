@@ -26,3 +26,25 @@ variable "subscription_id" {
 variable "tenant_id" {
   type = string
 }
+
+variable "passwords" {
+  type = map(object({
+    length  = number
+    special = bool
+    upper   = bool
+    name    = string
+  }))
+}
+
+variable "key_vault" {
+  type = map(object({
+    enable_rbac_authorization   = bool
+    enabled_for_deployment      = bool
+    enabled_for_disk_encryption = bool
+    purge_protection_enabled    = bool
+    soft_delete_retention_days  = number
+    tenant_id                   = string
+    sku_name                    = string
+    location                    = string
+  }))
+}

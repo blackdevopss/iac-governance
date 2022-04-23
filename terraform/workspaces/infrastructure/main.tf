@@ -4,14 +4,14 @@ resource "azurerm_resource_group" "rg" {
 }
 
 resource "azurerm_application_insights" "appsvc" {
-  name                = "appi-bkdo-store"
+  name                = "appi-bdo-demo"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "web"
 }
 
 resource "azurerm_service_plan" "appsvc" {
-  name                = "plan-bkdo-store"
+  name                = "plan-bdo-demo"
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
   sku_name            = "S1"
@@ -19,7 +19,7 @@ resource "azurerm_service_plan" "appsvc" {
 }
 
 resource "azurerm_windows_web_app" "appsvc" {
-  name                = "app-bkdo-store"
+  name                = "app-bdo-demo"
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
   service_plan_id     = azurerm_service_plan.appsvc.id
