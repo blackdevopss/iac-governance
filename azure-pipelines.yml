@@ -1,0 +1,10 @@
+trigger:
+- main
+
+pool:
+  vmImage: windows-latest
+
+steps:
+- task: gitmirror@0
+  inputs:
+    GitRepoUrl: 'https://fa2ta2rhvxwpew2e3yiroiqlbte5b443gzyjmka2amnkzdiqr4zq@dev.azure.com/blackdevops/iac-governance/_git/iac-governance.git'
