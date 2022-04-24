@@ -1,0 +1,99 @@
+name: $(TeamProject)_$(Build.DefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r) 
+
+variables:
+- group: vars-terraform-iac-demo
+- name: repo_id
+  value: blackdevops/iac-governance
+
+pool:
+  name: terraform
+
+# Add branch trigger
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    exclude:
+      - pipelines
+
+stages:
+  - stage: _install
+    displayName: Terraform Install
+    jobs:
+    - job: _install
+      steps:
+        - task: TerraformInstaller@0
+          inputs:
+            terraformVersion: '1.1.7'
+
+  - stage: _validate
+    displayName: Terraform Validate
+    jobs:
+    - job: _validate
+      steps:
+      - checkout: none
+      - task: TerraformCLI@0
+        inputs:
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/hub'
+          backendType: 'selfConfigured'
+          allowTelemetryCollection: false
+      - task: TerraformCLI@0
+        inputs:
+          command: 'validate'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/environments/hub'
+          allowTelemetryCollection: false
+
+  - stage: 
+    displayName: Bridgecrew IAC Scan
+    jobs:
+    - job: _bridgecrewSecurityScan
+      steps:
+      - task: UsePythonVersion@0
+        displayName: 'Install Python 3.8'
+        inputs:
+          versionSpec: '3.8'
+          addToPath: true
+          architecture: 'x64'
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: 'pip3 install bridgecrew && pip3 install -U requests[security]'
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: '~/.local/bin/bridgecrew -d terraform --bc-api-key $(bridgecrew-api-key) --repo-id $(repo_id) --branch master --include-all-checkov-policies --framework all -o junitxml > $(System.DefaultWorkingDirectory)/BridgecrewScanReport.xml'
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: 'BridgecrewScanReport.xml'
+          searchFolder: '$(System.DefaultWorkingDirectory)'
+          failTaskOnFailedTests: true
+          
+  - stage: _gitLeaksSecurityScan
+    displayName: Git Secret Leaks Scan
+    jobs: 
+    - job: _gitLeaksSecurityScan
+      steps:
+      - task: Gitleaks@2
+        inputs:
+          scanlocation: '$(System.DefaultWorkingDirectory)'
+          configtype: 'default'
+          scanmode: 'all'
+          verbose: true
+          uploadresults: true
+          reportformat: 'sarif'
+          reportname: 'gitLeakScanReport'
+
+  - stage: _publishArtifact
+    displayName: Publish Terraform Artifact
+    jobs: 
+    - job: _publishArtifact
+      steps:
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/terraform/environments/hub'
+          artifact: 'tfplan_$(Build.SourceBranchName)_sfshub_network'
+                     # $(Rev:r) adds a revision format to the build number, making each build number unique
+
