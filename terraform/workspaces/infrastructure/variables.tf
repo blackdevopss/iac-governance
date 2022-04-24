@@ -47,14 +47,6 @@ variable "tags" {
   type = map(string)
 }
 
-variable "client_id" {
-  type = string
-}
-
-variable "client_secret" {
-  type = string
-}
-
 variable "app_service_plan" {
   type = map(object({
     sku_name                              = string
@@ -64,14 +56,6 @@ variable "app_service_plan" {
     application_insights_application_type = string
 
   }))
-}
-
-variable "subscription_id" {
-  type = string
-}
-
-variable "tenant_id" {
-  type = string
 }
 
 variable "managed_identities" {

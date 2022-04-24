@@ -18,11 +18,11 @@ resource "azurerm_storage_account" "st" {
 
 resource "azurerm_log_analytics_workspace" "loga" {
   for_each            = var.diagnostic_logging
-  name                = each.log_analytics_workspace_name
+  name                = each.value.log_analytics_workspace_name
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
-  sku                 = each.log_analytics_workspace_sku
-  retention_in_days   = each.azurerm_log_analytics_workspace_retention_in_days
+  sku                 = each.value.log_analytics_workspace_sku
+  retention_in_days   = each.value.azurerm_log_analytics_workspace_retention_in_days
 
   tags = var.tags
 }
