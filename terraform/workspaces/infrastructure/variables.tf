@@ -17,6 +17,32 @@ variable "diagnostic_logging" {
   }))
 }
 
+variable "sqlServers" {
+  type = map(object({
+    version                      = string
+    location                     = string
+    administrator_login          = string
+    administrator_login_password = string
+    minimum_tls_version          = string
+  }))
+
+  default = {
+
+  }
+}
+
+variable "sqlDatabase" {
+  type = map(object({
+    collation      = string
+    license_type   = string
+    max_size_gb    = number
+    read_scale     = bool
+    sku_name       = string
+    zone_redundant = bool
+    server_name    = string
+  }))
+}
+
 variable "tags" {
   type = map(string)
 }
@@ -27,6 +53,17 @@ variable "client_id" {
 
 variable "client_secret" {
   type = string
+}
+
+variable "app_service_plan" {
+  type = map(object({
+    sku_name                              = string
+    os_type                               = string
+    web_app_name                          = string
+    application_insights_name             = string
+    application_insights_application_type = string
+
+  }))
 }
 
 variable "subscription_id" {

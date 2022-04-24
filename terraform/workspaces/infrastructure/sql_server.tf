@@ -8,6 +8,8 @@ resource "azurerm_mssql_server" "mssql" {
   administrator_login_password = each.value.administrator_login_password
   minimum_tls_version          = each.value.minimum_tls_version
 
+  tags = var.tags
+
 }
 
 resource "azurerm_mssql_database" "mssqldb" {
@@ -25,28 +27,3 @@ resource "azurerm_mssql_database" "mssqldb" {
 
 }
 
-variable "sqlServers" {
-  type = map(object({
-    version                      = string
-    location                     = string
-    administrator_login          = string
-    administrator_login_password = string
-    minimum_tls_version          = string
-  }))
-
-  default = {
-
-  }
-}
-
-variable "sqlDatabase" {
-  type = map(object({
-    collation      = string
-    license_type   = string
-    max_size_gb    = number
-    read_scale     = bool
-    sku_name       = string
-    zone_redundant = bool
-    server_name    = string
-  }))
-}

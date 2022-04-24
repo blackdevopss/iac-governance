@@ -1,6 +1,8 @@
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
+
+  tags = var.tags
 }
 
 resource "azurerm_storage_account" "st" {
@@ -21,5 +23,7 @@ resource "azurerm_log_analytics_workspace" "loga" {
   resource_group_name = azurerm_resource_group.rg.name
   sku                 = each.log_analytics_workspace_sku
   retention_in_days   = each.azurerm_log_analytics_workspace_retention_in_days
+
+  tags = var.tags
 }
 
