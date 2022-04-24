@@ -1,12 +1,23 @@
 name: $(TeamProject)_$(Build.DefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r) 
 
+trigger:
+  branches:
+    include:
+      - main
+    exclude:
+      - develop
+      - staging
+  paths:
+    exclude:
+      - pipelines
+
 variables:
 #- group: vars-terraform-iac-demo
 - name: repo_id
   value: blackdevops/iac-governance
 
 pool:
-  name: terraform
+  name: blackdevops
 
 stages:
   - stage: _install
@@ -27,13 +38,13 @@ stages:
       - task: TerraformCLI@0
         inputs:
           command: 'init'
-          workingDirectory: '$(System.DefaultWorkingDirectory)terraform/workspaces/infrastructure'
+          workingDirectory: '$(System.DefaultWorkingDirectory)terraform/workspaces/policy'
           backendType: 'selfConfigured'
           allowTelemetryCollection: false
       - task: TerraformCLI@0
         inputs:
           command: 'validate'
-          workingDirectory: '$(System.DefaultWorkingDirectory)terraform/workspaces/infrastructure'
+          workingDirectory: '$(System.DefaultWorkingDirectory)terraform/workspaces/policy'
           allowTelemetryCollection: false
 
   - stage: 
@@ -84,7 +95,7 @@ stages:
       steps:
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)terraform/workspaces/infrastructure'
+          targetPath: '$(System.DefaultWorkingDirectory)terraform/workspaces/policy'
           artifact: 'tfplan_$(Build.SourceBranchName)_sfshub_network'
                      # $(Rev:r) adds a revision format to the build number, making each build number unique
 
