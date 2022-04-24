@@ -8,15 +8,6 @@ variables:
 pool:
   name: terraform
 
-# Add branch trigger
-trigger:
-  branches:
-    include:
-      - main
-  paths:
-    exclude:
-      - pipelines
-
 stages:
   - stage: _install
     displayName: Terraform Install
