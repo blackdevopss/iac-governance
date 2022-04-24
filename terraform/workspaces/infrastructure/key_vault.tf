@@ -28,5 +28,9 @@ resource "azurerm_key_vault_secret" "mssql" {
   name         = "mssql-admin-password"
   value        = random_password.rpwd["sqlserver"].result
   key_vault_id = azurerm_key_vault.kv[each.key].id
+
+  depends_on = [
+    azurerm_role_assignment.tfsp
+  ]
 }
 
