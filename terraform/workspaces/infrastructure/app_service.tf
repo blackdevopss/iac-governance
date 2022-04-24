@@ -1,12 +1,13 @@
 resource "azurerm_application_insights" "appi" {
-  for_each            = var.app_service_plan
+  for_each            = var.diagnostic_logging
   name                = each.value.application_insights_name
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = each.value.application_insights_application_type
-
-  tags = var.tags
+  workspace_id        = azurerm_log_analytics_workspace.loga[each.key].id
+  tags                = var.tags
 }
+
 
 resource "azurerm_service_plan" "appsvc" {
   for_each            = var.app_service_plan
@@ -31,8 +32,8 @@ resource "azurerm_windows_web_app" "appsvc" {
   }
 
   app_settings = {
-    APPINSIGHTS_INSTRUMENTATIONKEY        = azurerm_application_insights.appi[each.value.application_insights_name].instrumentation_key
-    APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.appi[each.value.application_insights_name].connection_string
+    APPINSIGHTS_INSTRUMENTATIONKEY        = data.azurerm_application_insights.appi.instrumentation_key
+    APPLICATIONINSIGHTS_CONNECTION_STRING = data.azurerm_application_insights.appi.connection_string
   }
 
   site_config {}

@@ -30,3 +30,11 @@ resource "azurerm_key_vault_secret" "mssql" {
   key_vault_id = azurerm_key_vault.kv[each.key].id
 }
 
+resource "azurerm_key_vault_secret" "mssql" {
+  for_each     = var.key_vault
+  name         = "client-id"
+  value        = "44ab41cb-daa4-45f7-9f17-2c340d2c63d1"
+  key_vault_id = azurerm_key_vault.kv[each.key].id
+}
+
+

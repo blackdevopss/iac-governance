@@ -14,6 +14,8 @@ variable "diagnostic_logging" {
     storage_account_name                              = string
     storage_account_tier                              = string
     storage_account_replication_type                  = string
+    application_insights_name                         = string
+    application_insights_application_type             = string
   }))
 }
 
@@ -49,11 +51,9 @@ variable "tags" {
 
 variable "app_service_plan" {
   type = map(object({
-    sku_name                              = string
-    os_type                               = string
-    web_app_name                          = string
-    application_insights_name             = string
-    application_insights_application_type = string
+    sku_name     = string
+    os_type      = string
+    web_app_name = string
 
   }))
 }

@@ -42,12 +42,21 @@ output "app_service_plan_id" {
   })
 }
 
+output "loga_workspace_id" {
+  value = tomap({
+    for wi, loga in azurerm_application_insights.appi : wi => {
+      id = loga.id
+    }
+  })
+}
+
 output "appi_instrumentation_key" {
   value = tomap({
     for ik, appi in azurerm_application_insights.appi : ik => {
       instrumentation_key = appi.instrumentation_key
     }
   })
+  sensitive = true
 }
 
 output "appi_connection_string" {
@@ -56,6 +65,7 @@ output "appi_connection_string" {
       connection_string = appi.connection_string
     }
   })
+  sensitive = true
 }
 
 

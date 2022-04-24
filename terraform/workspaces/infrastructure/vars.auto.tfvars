@@ -1,12 +1,12 @@
 location            = "centralus"
-resource_group_name = "rg-bdoiaciac-demo"
+resource_group_name = "rg-bdoiac-demo"
 
 // USER ASSIGNED MANAGED IDENTITIES
 managed_identities = {
 
   "mi-bdoiac-demo" = {
     location            = "centralus"
-    resource_group_name = "rg-bdoiaciac-demo"
+    resource_group_name = "rg-bdoiac-demo"
   }
 }
 
@@ -14,11 +14,9 @@ managed_identities = {
 app_service_plan = {
 
   "plan-bdoiac-demo" = {
-    application_insights_application_type = "web"
-    application_insights_name             = "appi-bdoiac-demo"
-    os_type                               = "windows"
-    sku_name                              = "S1"
-    web_app_name                          = "app-bdoiac-demo"
+    os_type      = "Windows"
+    sku_name     = "S1"
+    web_app_name = "app-bdoiac-demo"
   }
 }
 
@@ -32,6 +30,8 @@ diagnostic_logging = {
     storage_account_name                              = "stbdodiagnosticlogstore"
     storage_account_replication_type                  = "LRS"
     storage_account_tier                              = "Standard"
+    application_insights_name                         = "appi-bdoiac-demo"
+    application_insights_application_type             = "web"
   }
 }
 
@@ -53,7 +53,7 @@ sqlDatabase = {
   "sqldb-bdoiac-demo" = {
     collation      = "SQL_Latin1_General_CP1_CI_AS"
     license_type   = "LicenseIncluded"
-    max_size_gb    = 5
+    max_size_gb    = 2
     read_scale     = false
     sku_name       = "Basic"
     zone_redundant = false
