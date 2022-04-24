@@ -6,6 +6,16 @@ variable "location" {
   type = string
 }
 
+variable "diagnostic_logging" {
+  type = map(object({
+    log_analytics_workspace_name                      = string
+    log_analytics_workspace_sku                       = string
+    azurerm_log_analytics_workspace_retention_in_days = number
+    storage_account_name                              = string
+    storage_account_tier                              = string
+    storage_account_replication_type                  = string
+  }))
+}
 
 variable "tags" {
   type = map(string)
@@ -25,6 +35,14 @@ variable "subscription_id" {
 
 variable "tenant_id" {
   type = string
+}
+
+variable "managed_identities" {
+  type = map(object({
+    location            = string
+    resource_group_name = string
+  }))
+
 }
 
 variable "passwords" {

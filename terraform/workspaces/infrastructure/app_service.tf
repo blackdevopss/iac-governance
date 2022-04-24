@@ -1,39 +1,27 @@
-resource "azurerm_resource_group" "rg" {
-  name     = var.resource_group_name
-  location = var.location
-}
-
 resource "azurerm_application_insights" "appsvc" {
-  name                = "appi-bdoiac-demo"
+  name                = each.value.application_insights_name
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
-  application_type    = "web"
+  application_type    = each.value.application_insights_application_type
 }
 
 resource "azurerm_service_plan" "appsvc" {
-  name                = "plan-bdoiac-demo"
+  for_each            = var.app_service_plan
+  name                = each.key
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
-  sku_name            = "S1"
-  os_type             = "Windows"
+  sku_name            = each.value.sku_name
+  os_type             = each.value.os_type
 }
 
 resource "azurerm_windows_web_app" "appsvc" {
-  name                = "app-bdoiac-demo"
+  name                = each.value.web_app_name
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
   service_plan_id     = azurerm_service_plan.appsvc.id
 
   identity {
-    type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.ua_mi.id]
-  }
-
-  connection_string {
-    name  = "sqlserver-conn-string"
-    type  = "SQLAzure"
-    value = ""
-
+    type = "SystemAssigned"
   }
 
   app_settings = {
@@ -44,3 +32,18 @@ resource "azurerm_windows_web_app" "appsvc" {
   site_config {}
 }
 
+variable "app_service_plan" {
+  type = map(object({
+    sku_name                              = string
+    os_type                               = string
+    web_app_name                          = string
+    application_insights_name             = string
+    application_insights_application_type = string
+
+  }))
+
+  default = {
+
+
+  }
+}

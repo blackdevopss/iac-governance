@@ -24,7 +24,6 @@ provider "random" {
   # Configuration options
 }
 
-// Workspace configuration for state storage in terraform cloud
 terraform {
   cloud {
     organization = "blackdevops"

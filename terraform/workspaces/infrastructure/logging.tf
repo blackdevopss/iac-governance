@@ -1,18 +1,25 @@
+resource "azurerm_resource_group" "rg" {
+  name     = var.resource_group_name
+  location = var.location
+}
+
 resource "azurerm_storage_account" "st" {
-  name                     = "stbdoiacdiaglogging"
+  for_each                 = var.diagnostic_logging
+  name                     = each.value.storage_account_name
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = var.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
+  account_tier             = each.value.storage_account_tier
+  account_replication_type = each.value.storage_account_replication_type
 
   tags = var.tags
 }
 
 resource "azurerm_log_analytics_workspace" "loga" {
-  name                = "loga-bdoiac-store"
+  for_each            = var.diagnostic_logging
+  name                = each.log_analytics_workspace_name
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
-  sku                 = "PerGB2018"
-  retention_in_days   = 30
+  sku                 = each.log_analytics_workspace_sku
+  retention_in_days   = each.azurerm_log_analytics_workspace_retention_in_days
 }
 

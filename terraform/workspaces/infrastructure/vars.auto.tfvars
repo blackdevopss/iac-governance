@@ -1,8 +1,43 @@
 location            = "centralus"
 resource_group_name = "rg-bdoiaciac-demo"
 
+// USER ASSIGNED MANAGED IDENTITIES
+managed_identities = {
+
+  "mi-bdoiac-demo" = {
+    location            = "centralus"
+    resource_group_name = "rg-bdoiaciac-demo"
+  }
+}
+
+// APP SERVICES
+app_service_plan = {
+
+  "plan-bdoiac-demo" = {
+    application_insights_application_type = "web"
+    application_insights_name             = "appi-bdoiac-demo"
+    os_type                               = "windows"
+    sku_name                              = "S1"
+    web_app_name                          = "app-bdoiac-demo"
+  }
+}
+
+// DIAGNOSTICS LOGGING
+diagnostic_logging = {
+
+  "log_storage" = {
+    azurerm_log_analytics_workspace_retention_in_days = 30
+    log_analytics_workspace_name                      = "loga-bdoiac-demo"
+    log_analytics_workspace_sku                       = "PerGB2018"
+    storage_account_name                              = "stbdodiagnosticlogstore"
+    storage_account_replication_type                  = "LRS"
+    storage_account_tier                              = "Standard"
+  }
+}
+
 // SQL SERVER
 sqlServers = {
+
   "sql-bdoiac-demo" = {
     administrator_login          = "devops"
     administrator_login_password = "exiWRZSlezoI3y4j"
@@ -14,6 +49,7 @@ sqlServers = {
 
 // SQL DATABASE
 sqlDatabase = {
+
   "sqldb-bdoiac-demo" = {
     collation      = "SQL_Latin1_General_CP1_CI_AS"
     license_type   = "LicenseIncluded"
@@ -27,6 +63,7 @@ sqlDatabase = {
 
 // KEY VAULT
 key_vault = {
+
   "kv-bdoiac-demo" = {
     enable_rbac_authorization   = true
     enabled_for_deployment      = true
@@ -41,6 +78,7 @@ key_vault = {
 
 // PASSWORDS
 passwords = {
+
   "sqlserver" = {
     length  = 16
     special = true
@@ -51,6 +89,7 @@ passwords = {
 
 // TAGS
 tags = {
+
   "provisioner" = "terraform"
   "org"         = "blackdevops"
   "project"     = "IAC Scan"
