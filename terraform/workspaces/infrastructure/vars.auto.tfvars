@@ -40,7 +40,7 @@ sqlServers = {
 
   "sql-bdoiac-demo" = {
     administrator_login          = "devops"
-    administrator_login_password = "exiWRZSlezoI3y4j"
+    administrator_login_password = ""
     location                     = "centralus"
     version                      = "12.0"
     minimum_tls_version          = "1.2"
@@ -72,7 +72,7 @@ key_vault = {
     purge_protection_enabled    = false
     sku_name                    = "standard"
     soft_delete_retention_days  = 7
-    tenant_id                   = "2a95a0cb-901a-49a7-83da-bc8e61c7f655"
+    tenant_id                   = ""
   }
 }
 
