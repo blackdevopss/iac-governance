@@ -9,10 +9,11 @@ trigger:
       - staging
   paths:
     exclude:
-      - pipelines
+    - terraform/azure_devops/pipelines
+    - terraform/azure_devops/projects
 
 variables:
-#- group: vars-terraform-iac-demo
+- group: Terraform-IAC-Vars
 - name: repo_id
   value: blackdevops/iac-governance
 
@@ -26,6 +27,7 @@ stages:
     - job: _install
       steps:
         - task: TerraformInstaller@0
+          displayName: Installing Terraform
           inputs:
             terraformVersion: '1.1.7'
 
@@ -36,49 +38,55 @@ stages:
       steps:
       - checkout: none
       - task: TerraformCLI@0
+        displayName: Initializing Terraform working directory
         inputs:
           command: 'init'
-          workingDirectory: '$(System.DefaultWorkingDirectory)terraform/workspaces/infrastructure'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/workspaces/infrastructure'
           backendType: 'selfConfigured'
           allowTelemetryCollection: false
       - task: TerraformCLI@0
+        displayName: Validating Terraform configuration
         inputs:
           command: 'validate'
-          workingDirectory: '$(System.DefaultWorkingDirectory)terraform/workspaces/infrastructure'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/workspaces/infrastructure'
           allowTelemetryCollection: false
 
   - stage: 
-    displayName: Bridgecrew IAC Scan
+    displayName: Checkov (Bridgecrew) IAC Scan
     jobs:
-    - job: _bridgecrewSecurityScan
+    - job: _checkov
       steps:
       - task: UsePythonVersion@0
-        displayName: 'Install Python 3.8'
+        displayName: 'Installing Python 3.8'
         inputs:
           versionSpec: '3.8'
           addToPath: true
           architecture: 'x64'
       - task: Bash@3
+        displayName: Installing Checkov CLI
         inputs:
           targetType: 'inline'
           script: 'pip3 install bridgecrew && pip3 install -U requests[security]'
       - task: Bash@3
+        displayName: Starting Checkov Security Scan
         inputs:
           targetType: 'inline'
-          script: '~/.local/bin/bridgecrew -d terraform --bc-api-key $(bridgecrew-api-key) --repo-id $(repo_id) --branch master --include-all-checkov-policies --framework all -o junitxml > $(System.DefaultWorkingDirectory)/BridgecrewScanReport.xml'
+          script: '~/.local/bin/bridgecrew -d terraform --bc-api-key $(bridgecrew-apikey) --repo-id $(repo_id) --branch main --include-all-checkov-policies --soft-fail --framework all -o junitxml > $(System.DefaultWorkingDirectory)/BridgecrewScanReport.xml'
       - task: PublishTestResults@2
+        displayName: Publishing Checkov Scan Results
         inputs:
           testResultsFormat: 'JUnit'
           testResultsFiles: 'BridgecrewScanReport.xml'
           searchFolder: '$(System.DefaultWorkingDirectory)'
-          failTaskOnFailedTests: true
+          failTaskOnFailedTests: false
           
   - stage: _gitLeaksSecurityScan
-    displayName: Git Secret Leaks Scan
+    displayName: GitLeaks Security Scan
     jobs: 
-    - job: _gitLeaksSecurityScan
+    - job: _gitLeaks
       steps:
       - task: Gitleaks@2
+        displayName: Starting Gitleaks Security Scan
         inputs:
           scanlocation: '$(System.DefaultWorkingDirectory)'
           configtype: 'default'
@@ -87,6 +95,15 @@ stages:
           uploadresults: true
           reportformat: 'sarif'
           reportname: 'gitLeakScanReport'
+          taskfail: false
+          redact: false
+      - task: PublishTestResults@2
+        displayName: Publishing Gitleaks Scan Report
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: 'GitleaksScanReport.xml'
+          searchFolder: '$(System.DefaultWorkingDirectory)'
+          failTaskOnFailedTests: false
 
   - stage: _publishArtifact
     displayName: Publish Terraform Artifact
@@ -94,8 +111,9 @@ stages:
     - job: _publishArtifact
       steps:
       - task: PublishPipelineArtifact@1
+        displayName: Publishing Terraform Artifact
         inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)terraform/workspaces/infrastructure'
-          artifact: 'tfplan_$(Build.SourceBranchName)_sfshub_network'
+          targetPath: '$(System.DefaultWorkingDirectory)/terraform/workspaces/infrastructure'
+          artifact: 'tfplan_$(Build.SourceBranchName)_iac_governance'
                      # $(Rev:r) adds a revision format to the build number, making each build number unique
 
