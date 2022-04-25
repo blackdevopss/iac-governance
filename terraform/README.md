@@ -2,6 +2,6 @@
 
 ## Sample Terraform configuration
 
-![Terraform IAC Security (1)](https://user-images.githubusercontent.com/104167951/164955718-eb83bd29-4980-4db5-ac82-5114aac63c2e.jpeg)
+![Pipeline STAGES](https://user-images.githubusercontent.com/104167951/165136910-ad275442-8e94-4a22-84b0-63bf852db1dd.jpeg)
 
 www.blackdevops.com
