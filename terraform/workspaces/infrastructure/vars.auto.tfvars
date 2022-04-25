@@ -6,7 +6,7 @@ managed_identities = {
 
   "mi-bdoiac-demo" = {
     location            = "centralus"
-    resource_group_name = "rg-bdoiac-demo"
+    resource_group_name = "'rg-bdoiac-demo'"
   }
 }
 
