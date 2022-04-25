@@ -14,6 +14,13 @@ resource "azuredevops_serviceendpoint_azurerm" "se" {
   azurerm_subscription_name = var.azurerm_subscription_name
 }
 
+resource "azurerm_role_assignment" "bdo" {
+  scope                = data.azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Administrator"
+  principal_id         = azuredevops_serviceendpoint_azurerm.se.id
+}
+
+
 resource "azuredevops_git_repository" "github" {
   project_id = azuredevops_project.azdo.id
   name       = "iac-governance"
@@ -54,4 +61,8 @@ resource "azuredevops_variable_group" "var_group" {
   variable {
     name = "azdo-pat"
   }
+
+  depends_on = [
+    azurerm_role_assignment.bdo, azuredevops_serviceendpoint_azurerm.se
+  ]
 }
