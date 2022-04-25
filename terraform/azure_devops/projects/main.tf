@@ -56,6 +56,6 @@ resource "azuredevops_variable_group" "var_group" {
   }
 
   depends_on = [
-    azurerm_role_assignment.bdo, azuredevops_serviceendpoint_azurerm.se
+    azuredevops_serviceendpoint_azurerm.se
   ]
 }
